@@ -1,5 +1,4 @@
 .App {
-
   background-color: #282c34;
   min-height: 100vh;
   display: flex;
@@ -10,12 +9,34 @@
   text-align: center;
 }
 
-.App-header {
-  font-size: 80px;
+@media screen and  (max-width:375px) {
+  .App-header {
+    font-size: 20px;
+  }
+
+  .App-content {
+    font-size: 14px;
+  }
 }
 
-.App-content {
-  font-size: 30px;
+@media screen and  (min-width:376px) {
+  .App-header {
+    font-size: 60px;
+  }
+
+  .App-content {
+    font-size: 20px;
+  }
+}
+
+@media screen and  (min-width:800px) {
+  .App-header {
+    font-size: 80px;
+  }
+
+  .App-content {
+    font-size: 30px;
+  }
 }
 
 .App-ul {
