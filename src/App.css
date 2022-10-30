@@ -17,6 +17,10 @@
   .App-content {
     font-size: 14px;
   }
+
+  #console {
+    width: 300px;
+  }
 }
 
 @media screen and  (min-width:376px) {
@@ -27,6 +31,10 @@
   .App-content {
     font-size: 20px;
   }
+
+  #console {
+    width: 350px;
+  }
 }
 
 @media screen and  (min-width:800px) {
@@ -36,6 +44,10 @@
 
   .App-content {
     font-size: 30px;
+  }
+
+  #console {
+    width: 700px;
   }
 }
 
@@ -49,4 +61,16 @@
 
 label {
   color: #ff4f00!important;
+}
+
+#console {
+  background-color: black;
+  font-size: 14px;
+  text-align: left;
+  margin: 1.5em;
+  white-space: pre-wrap;       /* css-3 */
+  white-space: -moz-pre-wrap;  /* Mozilla, since 1999 */
+  white-space: -pre-wrap;      /* Opera 4-6 */
+  white-space: -o-pre-wrap;    /* Opera 7 */
+  word-wrap: break-word;       /* Internet Explorer 5.5+ */
 }

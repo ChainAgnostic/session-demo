@@ -37,6 +37,14 @@ function DIDSessionDemoHandler() {
     setSession(session)
   }
 
+  const log = (message: string) => {
+    console.log(message)
+    const consoleElement = document?.getElementById("console")
+    if (consoleElement) {
+      consoleElement.innerHTML = message
+    }
+  }
+
   const render = () => {
     return (
       <div>
@@ -67,7 +75,7 @@ function DIDSessionDemoHandler() {
             variant="contained"
             size="large"
             onClick={ () => {
-              console.log(`${JSON.stringify(session?.cacao, null, 2)}`)
+              log(`${JSON.stringify(session?.cacao, null, 2)}`)
             }}
           >
             Log session's CACAO
@@ -78,7 +86,7 @@ function DIDSessionDemoHandler() {
             variant="contained"
             size="large"
             onClick={ () => {
-              console.log(`${session!.serialize()}`)
+              log(`${session!.serialize()}`)
             }}
           >
             Log serialized session
@@ -98,7 +106,7 @@ function DIDSessionDemoHandler() {
               onClick={ async () => {
                 const message = (document?.getElementById("message") as HTMLInputElement).value
                 const signed = await session!.did.createJWS(message)
-                console.log(`${signed.signatures[0].signature}`)
+                log(`${signed.signatures[0].signature}`)
               }}
             >
               Log message's signature
@@ -116,6 +124,11 @@ function DIDSessionDemoHandler() {
           >
             Sign out
           </Button>
+        </Stack>
+        <Stack direction='row' justifyContent="left">
+          <pre id='console'>
+
+          </pre>
         </Stack>
       </Stack>
     )
