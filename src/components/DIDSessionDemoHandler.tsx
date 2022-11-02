@@ -25,7 +25,7 @@ function DIDSessionDemoHandler() {
 
   const signInWithEthereum = async () => {
     const ethProvider = await detectEthereumProvider();
-    const addresses = await (ethProvider as any).enable()
+    const addresses = await (ethProvider as any).request({ method: 'eth_requestAccounts'})
     const accountId = await getAccountId(ethProvider, addresses[0])
 
     const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId)
