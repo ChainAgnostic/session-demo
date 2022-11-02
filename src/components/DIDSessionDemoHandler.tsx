@@ -1,10 +1,11 @@
 import detectEthereumProvider from '@metamask/detect-provider'
-import { EthereumAuthProvider } from '@ceramicnetwork/blockchain-utils-linking'
-import { DIDSession } from 'did-session'
+import { DIDSession,  } from 'did-session'
 import React, { useState } from 'react'
 import Button from '@mui/material/Button';
 import { styled } from '@mui/material/styles';
 import { Stack, TextField } from '@mui/material'
+import { SolanaWebAuth, getAccountIdByNetwork } from '@didtools/pkh-solana'
+import { EthereumWebAuth, getAccountId } from '@didtools/pkh-ethereum'
 
 const MessageTextField = styled(TextField)({
   '& .MuiOutlinedInput-root': {
@@ -19,22 +20,42 @@ const MessageTextField = styled(TextField)({
 
 function DIDSessionDemoHandler() {
   const [session, setSession] = useState<DIDSession>()
+  const resources = ['test-resource', 'another-test-resource']
 
-  const authenticate = async () => {
+
+  const signInWithEthereum = async () => {
     const ethProvider = await detectEthereumProvider();
-    const addresses = await (window.ethereum as any).request({ method: 'eth_requestAccounts' })
-    const authProvider = new EthereumAuthProvider(ethProvider, addresses[0])
+    const addresses = await (ethProvider as any).request({ method: 'eth_requestAccounts'})
+    const accountId = await getAccountId(ethProvider, addresses[0])
 
-    const oneWeek = 60 * 60 * 24 * 7
+    const authMethod = await EthereumWebAuth.getAuthMethod(ethProvider, accountId)
 
-    const session = await DIDSession.authorize(
-      authProvider,
-      {
-        resources: ['test-resource', 'another-test-resource'],
-        expiresInSecs: oneWeek,
-        domain: 'YourAppName'
-      })
+    const session = await DIDSession.authorize(authMethod, { resources })
     setSession(session)
+  }
+
+  const signInWithSolana = async () => {
+    if ('phantom' in window) {
+      const anyWindow: any = window
+      const solProvider = anyWindow.phantom?.solana
+
+      if (!solProvider.isPhantom) {
+        window.alert('You need to have the Phantom Wallet installed to log in with Solana')
+        return
+      }
+
+      const address = await solProvider.connect()
+      const accountId = getAccountIdByNetwork('mainnet', address.publicKey.toString())
+
+      const authMethod = await SolanaWebAuth.getAuthMethod(solProvider, accountId)
+
+      // @ts-ignore
+      const session = await DIDSession.authorize(authMethod, { resources })
+
+      setSession(session)
+    } else {
+      window.alert('You need to have the Phantom Wallet installed to log in with Solana')
+    }
   }
 
   const log = (message: string) => {
@@ -57,13 +78,22 @@ function DIDSessionDemoHandler() {
 
   const renderUnauthenticated = () => {
     return (
-      <Button
-        variant="contained"
-        size="large"
-        onClick={authenticate}
-      >
-        Authenticate & Authorize
-      </Button>
+      <Stack spacing={2}>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={signInWithEthereum}
+        >
+          Sign In With Ethereum
+        </Button>
+        <Button
+          variant="contained"
+          size="large"
+          onClick={signInWithSolana}
+        >
+          Sign In With Solana
+        </Button>
+      </Stack>
     )
   }
 
